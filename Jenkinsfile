@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GO_VERSION = "1.21"
+        GO_VERSION = "1.22.3"
     }
 
     stages {
