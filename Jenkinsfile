@@ -3,12 +3,14 @@ pipeline {
 
     environment {
         GO_VERSION = "1.22.3"
+        GOROOT = "/usr/local/go"
+        PATH = "/usr/local/go/bin:$PATH"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from your GitHub repo
+                // Checkout your GitHub repo
                 git url: 'https://github.com/AnithaAnnem/golang-based-task.git', branch: 'main'
             }
         }
@@ -18,8 +20,8 @@ pipeline {
                 echo "Installing Go ${GO_VERSION}"
                 sh '''
                     wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
-                    sudo rm -rf /usr/local/go
-                    sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
+                    rm -rf /usr/local/go
+                    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
                     export PATH=$PATH:/usr/local/go/bin
                     go version
                 '''
