@@ -3,26 +3,25 @@ pipeline {
 
     environment {
         GO_VERSION = "1.22.3"
-        GOROOT = "/usr/local/go"
-        PATH = "/usr/local/go/bin:$PATH"
+        GO_DIR = "${WORKSPACE}/go-install/go"
+        PATH = "${WORKSPACE}/go-install/go/bin:$PATH"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout your GitHub repo
                 git url: 'https://github.com/AnithaAnnem/golang-based-task.git', branch: 'main'
             }
         }
 
         stage('Setup Go') {
             steps {
-                echo "Installing Go ${GO_VERSION}"
+                echo "Installing Go ${GO_VERSION} in workspace"
                 sh '''
-                    wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
-                    rm -rf /usr/local/go
-                    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
-                    export PATH=$PATH:/usr/local/go/bin
+                    mkdir -p $WORKSPACE/go-install
+                    wget -q https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+                    tar -C $WORKSPACE/go-install -xzf go${GO_VERSION}.linux-amd64.tar.gz
+                    export PATH=$WORKSPACE/go-install/go/bin:$PATH
                     go version
                 '''
             }
@@ -42,6 +41,7 @@ pipeline {
                 dir('example/outyet') {
                     echo "Running go vet and golint"
                     sh '''
+                        export PATH=$WORKSPACE/go-install/go/bin:$PATH
                         go vet ./...
 
                         if ! command -v golint &> /dev/null; then
