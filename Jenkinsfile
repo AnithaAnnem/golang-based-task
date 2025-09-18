@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests') {
+        stage('Unit Testing') {
             steps {
                 dir('example/outyet') {
                     echo "Running unit tests"
@@ -36,7 +36,7 @@ pipeline {
             }
         }
 
-        stage('Code Quality Checks') {
+        stage('Static Code Analysis') {
             steps {
                 dir('example/outyet') {
                     echo "Running go vet and golint"
@@ -56,11 +56,12 @@ pipeline {
             }
         }
 
+        
         stage('Build Application') {
             steps {
                 dir('example/outyet') {
                     echo "Building the Go application"
-                    sh 'go build'
+                    sh 'go build ./...'
                 }
             }
         }
